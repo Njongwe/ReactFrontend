@@ -2,12 +2,13 @@ version: 0.2
 
 phases:
   pre_build:
-    commands:
-      - echo Logging in to DockerHub...
-      - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-      - REPOSITORY_URI="docker.io/anujsharma1990/frontend"
-      - CONTAINER_NAME="frontend-container"
-      - IMAGE_TAG="latest"
+  commands:
+    - echo Logging in to Amazon ECR...
+    - REPOSITORY_URI="059567099966.dkr.ecr.us-east-1.amazonaws.com/my-app/frontend"
+    - CONTAINER_NAME="Frontend-Container"
+    - IMAGE_TAG="latest"
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 059567099966.dkr.ecr.us-east-1.amazonaws.com
+
   build:
     commands:
       - echo Build started on `date`
@@ -20,4 +21,4 @@ phases:
       - echo Writing image definitions file...
       - printf '[{"name":"'$CONTAINER_NAME'","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > builddefinition.json
 artifacts:
-    files: builddefinition.json
+    files: imagedefinition.json
